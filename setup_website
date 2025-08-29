@@ -1,0 +1,47 @@
+#!/bin/bash
+
+# Обновляем пакеты
+sudo apt update && sudo apt upgrade -y
+
+# Устанавливаем Apache2
+sudo apt install apache2 -y
+
+# Запускаем Apache2 и добавляем в автозагрузку
+sudo systemctl start apache2
+sudo systemctl enable apache2
+
+# Создаём базовую HTML страницу
+sudo mkdir -p /var/www/html
+sudo bash -c 'cat > /var/www/html/index.html' << 'EOF'
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой первый сайт</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+        }
+        h1 {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Добро пожаловать на мой сайт!</h1>
+    <p>Это базовый сайт, работающий на Apache2 на сервере Debian.</p>
+</body>
+</html>
+EOF
+
+# Устанавливаем правильные права
+sudo chown -R www-data:www-data /var/www/html
+sudo chmod -R 755 /var/www/html
+
+# Проверяем статус Apache2
+sudo systemctl status apache2
+
+echo "Сайт создан! Откройте в браузере: http://$(hostname -I | awk '{print $1}')"
